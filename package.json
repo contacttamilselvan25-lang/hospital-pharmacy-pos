@@ -1,0 +1,22 @@
+{
+  "name": "hospital-pharmacy-pos",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Hospital Pharmacy POS & Inventory Management System",
+  "scripts": {
+    "start": "npm --prefix backend start",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "backend": "npm --prefix backend run dev",
+    "frontend": "npm --prefix frontend run dev",
+    "test": "npm --prefix backend test",
+    "test:all": "npm --prefix backend run test:all"
+  },
+  "keywords": [
+    "pharmacy",
+    "pos",
+    "hospital-system"
+  ],
+  "author": "",
+  "license": "ISC"
+}

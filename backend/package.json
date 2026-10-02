@@ -1,0 +1,32 @@
+{
+  "name": "hospital-pharmacy-pos-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Hospital Pharmacy POS & Inventory Management System",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node src/tests/test_e2e_workflow.js",
+    "test:all": "node src/tests/test_auth.js && node src/tests/test_dashboard.js && node src/tests/test_inventory.js && node src/tests/test_pos.js && node src/tests/test_reports.js && node src/tests/test_security.js && node src/tests/test_e2e_workflow.js",
+    "db:seed": "node src/db/seed.js"
+  },
+  "keywords": [
+    "pharmacy",
+    "pos",
+    "inventory",
+    "express",
+    "sqlite"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^13.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "exceljs": "^4.4.0",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.3",
+    "pdfkit": "^0.20.2"
+  }
+}
