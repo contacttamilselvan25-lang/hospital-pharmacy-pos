@@ -22,6 +22,8 @@ database/*.sqlite
 database/*.db
 database/*.sqlite-journal
 database/*.db-journal
+database/*.db-shm
+database/*.db-wal
 
 # Logs
 npm-debug.log*
