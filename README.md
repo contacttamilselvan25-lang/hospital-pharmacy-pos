@@ -1,242 +1,238 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/Hospital-Pharmacy%20POS-00B4D8?style=for-the-badge&logo=medkit&logoColor=white" alt="Hospital Pharmacy POS" />
-  <img src="https://img.shields.io/badge/Version-1.0.0-90E0EF?style=for-the-badge" alt="Version" />
-  <img src="https://img.shields.io/badge/License-MIT-CA6702?style=for-the-badge" alt="License" />
-  <img src="https://img.shields.io/badge/Tests-118%20Passing-00B4D8?style=for-the-badge&logo=jest&logoColor=white" alt="Tests" />
+  <img src="https://img.shields.io/badge/Healthcare-POS%20%26%20Inventory-0284c7?style=for-the-badge&logo=plus&logoColor=white" alt="Hospital Pharmacy POS" />
+  <img src="https://img.shields.io/badge/Frontend-React%2019%20%7C%20Vite-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19 & Vite" />
+  <img src="https://img.shields.io/badge/Backend-Node.js%20%7C%20Express-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js & Express" />
+  <img src="https://img.shields.io/badge/Database-SQLite%20(WAL)-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite WAL" />
+  <img src="https://img.shields.io/badge/Tests-118%2F118%20Passing-10b981?style=for-the-badge&logo=jest&logoColor=white" alt="Tests" />
+  <img src="https://img.shields.io/badge/License-MIT-f59e0b?style=for-the-badge" alt="MIT License" />
 </p>
 
-<h1 align="center">🏥 Hospital Pharmacy POS & Inventory Management System</h1>
+<h1 align="center">🏥 MediFlow POS — Hospital Pharmacy Point-of-Sale & Clinical Inventory System</h1>
 
 <p align="center">
-  <strong>A full-stack, clinical-grade Hospital Pharmacy Point of Sale (POS) and Inventory Management System</strong><br>
-  Built for pharmacy students, healthcare technology demonstrations, and hospital dispensaries.
+  <strong>An enterprise-grade, clinical pharmacy dispensary counter POS and FEFO batch inventory management system.</strong><br>
+  Designed for real-world healthcare compliance, hospital dispensary speed, multi-counter billing, and automated end-of-day financial closures.
 </p>
 
 <p align="center">
-  <a href="#-key-features">Features</a> •
-  <a href="#-tech-stack">Tech Stack</a> •
-  <a href="#-architecture">Architecture</a> •
+  <a href="#-key-features">Key Features</a> •
+  <a href="#-system-architecture">Architecture</a> •
   <a href="#-quick-start">Quick Start</a> •
-  <a href="#-demo-accounts">Demo Accounts</a> •
-  <a href="#-testing">Testing</a> •
-  <a href="#-project-structure">Structure</a> •
-  <a href="#-contributing">Contributing</a>
+  <a href="#-demo-credentials">Demo Accounts</a> •
+  <a href="#-rest-api-documentation">API Docs</a> •
+  <a href="#-automated-testing">Test Suite</a> •
+  <a href="#-free-cloud-deployment">Free Deployment</a> •
+  <a href="#-license">License</a>
 </p>
+
+---
+
+## 🌟 Overview
+
+**MediFlow POS** is built from the ground up to solve hospital pharmacy challenges:
+- **Zero Dispensing Errors**: Automatic block against dispensing expired medication at the checkout counter.
+- **FEFO (First-Expiry-First-Out) Dispensing**: Prioritizes batches nearing expiration to prevent inventory write-offs.
+- **Atomic Concurrency**: Built with SQLite in Write-Ahead-Logging (`WAL`) mode with ACID transactions, guaranteeing zero negative stock even during peak queue hours.
+- **Automated Daily Shift Closure**: Scheduled midnight background cron jobs that generate encrypted Excel (`.xlsx`) and PDF receipts, archive sales, and reset the daily counter.
 
 ---
 
 ## ✨ Key Features
 
-| Feature | Description |
-|---------|-------------|
-| **🔐 Role-Based Access Control** | Separate **Admin (Chief Pharmacist)** and **Cashier (Counter Dispensary)** roles with granular permissions |
-| **📦 Batch & FEFO Tracking** | Tracks batch numbers, manufacturing/expiry dates; enforces First-Expiry-First-Out dispensing |
-| **🚫 Clinical Expiry Blocking** | Prevents dispensing expired medications at POS with real-time clinical alerts |
-| **🔔 4-Tier Smart Alerts** | **Critical Stock**, **Low Stock**, **Near-Expiry (<90 days)**, **Expired Quarantine** — instant visual badges |
-| **💊 POS Billing Counter** | Instant medicine search, dynamic cart, multi-payment (UPI/Cash/Card), authentic receipts |
-| **🔒 ACID Transactions** | Atomic stock deduction from exact batch on sale completion — zero negative stock risk |
-| **📋 Complete Audit Trail** | Immutable history of medicine creation, shipments, adjustments, and patient sales |
-| **📊 Analytics & Reports** | Sales analytics, procurement reports, stock movement logs, revenue dashboards |
+| Capability | Technical Implementation & Clinical Benefit |
+| :--- | :--- |
+| **💊 Smart POS Billing Counter** | Instant debounced search by Generic Name, Brand Name, or Dosage. Dynamic cart calculation with real-time tax breakdown, discount application, and thermal receipt printing. |
+| **🛡️ Expiry Quarantine Engine** | Automatic 4-tier status detection: **Normal**, **Low Stock**, **Near Expiry (<90 days)**, and **Expired Quarantine**. Expired batches cannot be added to the cart under any condition. |
+| **📦 FEFO Batch Inventory** | Supports multi-batch stock tracking per drug with batch numbers, manufacturing dates, expiry dates, purchase costs, and MRP margins. |
+| **🔐 Role-Based Access Control (RBAC)** | Strict privilege separation between **Admin (Chief Pharmacist)** and **Cashier (Dispensary Counter)**, backed by JWT authentication and custom staff passkeys. |
+| **⚡ Atomic Stock Reductions** | Uses transactional batch-level reservation on checkout to guarantee data consistency. |
+| **📈 Reports & Daily Archives** | Real-time sales statistics, top-selling medications, daily revenue graphs, and automated downloadable daily audit logs (Excel & PDF). |
+| **🎨 Medical Glassmorphism UI** | High-contrast, responsive clinical dark-mode user interface built with modern vanilla CSS design tokens for ultra-fast load times. |
+
+---
+
+## 🏗 System Architecture
+
+```mermaid
+graph TD
+    Client["💻 Counter POS Client (React 19 + Vite)"]
+    API["⚡ REST API Server (Node.js + Express)"]
+    Auth["🔐 JWT & Passkey Guard"]
+    Cron["⏰ Daily Midnight Scheduler (Auto-Archiver)"]
+    DB[("🗄️ SQLite Database (WAL Mode + Relational Schema)")]
+    Filesystem["📁 Daily Reports Storage (.xlsx / .pdf)"]
+
+    Client -->|HTTP / JSON via REST| API
+    API --> Auth
+    Auth --> DB
+    Cron -->|Daily Snapshot| DB
+    Cron -->|Export Report| Filesystem
+    API -->|Download Archive| Filesystem
+```
 
 ---
 
 ## 🛠 Tech Stack
 
-<div align="center">
-
-| Layer | Technology |
-|-------|------------|
-| **Frontend** | React 18 + Vite • Vanilla CSS Design System (Dark Glassmorphism) |
-| **Backend** | Node.js + Express • SQLite (WAL Mode) |
-| **Auth** | JWT (HS256) • bcrypt Password Hashing • Passkey 2FA |
-| **Testing** | Native Node.js Test Runner • 118 Integration Tests |
-| **Database** | SQLite3 with Foreign Keys • Relational Schema |
-
-</div>
+- **Frontend**: React 19, Vite, Lucide Icons, Pure CSS Design System (Zero heavyweight UI frameworks for lightning-fast kiosk response)
+- **Backend**: Node.js, Express.js, CORS, Dotenv, ExcelJS, PDFKit
+- **Database**: SQLite3 via `better-sqlite3` (WAL Mode enabled with Foreign Key constraints)
+- **Security**: JWT (JSON Web Tokens), bcryptjs password hashing, granular RBAC middleware, 4-digit fast passkey verification
+- **Testing**: Native Node.js Test Suite (118 integrated test cases across 8 suites)
 
 ---
 
-## 🏗 Architecture
+## 🚀 Quick Start (Local Setup in 2 Minutes)
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v18.x or newer recommended)
+- `npm` (v9.x or newer)
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/contacttamilselvan25-lang/hospital-pharmacy-pos.git
+cd hospital-pharmacy-pos
+```
+
+### 2. Backend Setup
+```bash
+cd backend
+
+# Install dependencies
+npm install
+
+# Initialize and seed the database with realistic clinical demo data
+npm run db:seed
+
+# Start backend server
+npm run dev
+```
+> The backend server starts listening at **`http://localhost:5000`**.  
+> Test health: `http://localhost:5000/api/health`
+
+### 3. Frontend Setup (In a New Terminal)
+```bash
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start Vite development server
+npm run dev
+```
+> Open your browser at **`http://localhost:5173`**.
+
+---
+
+## 🔑 Demo Credentials
+
+The database is pre-seeded with sample users for testing and viva evaluation:
+
+| Role | Username | Password | Quick Passkey | Permissions |
+| :--- | :--- | :--- | :--- | :--- |
+| **Chief Pharmacist (Admin)** | `admin` | `admin123` | `2306324052` | Complete system access: Inventory master, batch editing, user management, financial reports, and archives. |
+| **Dispensary Counter (Cashier)** | `cashier01` | `cashier123` | `1111` | Counter POS billing, customer invoice lookup, receipt generation. |
+| **Secondary Counter (Cashier)** | `cashier02` | `cashier123` | `2222` | Counter POS billing, sales receipts. |
+
+*(Single-click demo login buttons are provided on the login page for instant access.)*
+
+---
+
+## 🧪 Automated Testing
+
+MediFlow POS comes with an exhaustive test suite covering security, business logic, POS checkout integrity, and FEFO allocation:
+
+```bash
+cd backend
+npm test
+```
+
+### Individual Test Suites:
+```bash
+node src/db/verify.js               # Schema integrity & constraints (20 tests)
+node src/tests/test_auth.js         # Authentication, Passkeys & RBAC (16 tests)
+node src/tests/test_dashboard.js    # Metric calculations & 4-tier alerts (15 tests)
+node src/tests/test_inventory.js    # Batch management & FEFO sorting (14 tests)
+node src/tests/test_pos.js          # Cart & stock deduction checks (15 tests)
+node src/tests/test_reports.js      # Sales reports & analytics (17 tests)
+node src/tests/test_security.js     # SQL injection & security audits (20 tests)
+node src/tests/test_e2e_workflow.js # End-to-end full dispensary workflow (16 tests)
+```
+
+**Overall Coverage**: `118 / 118 passing (100%)` ✅
+
+---
+
+## 🌐 Free Cloud Deployment
+
+### 1. Deploy Backend on [Render.com](https://render.com) (100% Free)
+- Create a new **Web Service** pointing to your repository.
+- **Root Directory**: `backend`
+- **Build Command**: `npm install && npm run db:seed`
+- **Start Command**: `npm start`
+- Add Environment Variable:
+  - `NODE_ENV` = `production`
+  - `PORT` = `5000`
+  - `JWT_SECRET` = `<any-strong-random-key>`
+
+### 2. Deploy Frontend on [Vercel](https://vercel.com) (100% Free)
+- Import your repository into Vercel.
+- **Root Directory**: `frontend`
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- Add Environment Variable:
+  - `VITE_API_BASE` = `https://<YOUR-RENDER-BACKEND-URL>.onrender.com/api`
+
+---
+
+## 🔒 Security Best Practices
+
+- All authentication routes use **salted bcrypt** hashing.
+- API endpoints enforce **Bearer JWT verification** and role validation.
+- Database queries use **parameterized prepared statements** throughout to completely eliminate SQL injection vulnerabilities.
+- Production environment configurations are managed via `.env` and are strictly excluded from git tracking.
+
+---
+
+## 📁 Repository Structure
 
 ```text
 hospital-pharmacy-pos/
 ├── backend/
+│   ├── archives/daily_sales/  # Automated Excel & PDF daily shift archives
 │   ├── src/
-│   │   ├── db/              # SQLite connection (WAL) + schema + seed
-│   │   ├── middleware/      # JWT auth + role authorization
-│   │   ├── routes/          # auth, dashboard, inventory, sales, reports
-│   │   ├── tests/           # 8 test suites (118 tests)
-│   │   └── server.js        # Express entry point (port 5000)
-│   ├── .env.example         # Environment template
+│   │   ├── db/                # Connection, Relational Schema, and Seeders
+│   │   ├── middleware/        # JWT & RBAC Auth Guards
+│   │   ├── routes/            # Auth, Dashboard, Inventory, Sales, Reports
+│   │   ├── services/          # Midnight Daily Scheduler & Report Exporters
+│   │   ├── tests/             # 8 Comprehensive Integration Test Suites
+│   │   └── server.js          # Express entrypoint
+│   ├── .env.example
 │   └── package.json
+├── database/                  # SQLite local storage (pharmacy.db)
+├── docs/                      # Technical Documentation & Viva Guides
 ├── frontend/
 │   ├── src/
-│   │   ├── App.jsx          # POS Terminal, Dashboard, Catalog, Reports
-│   │   ├── App.css          # Design system: glassmorphism + dark theme
-│   │   ├── index.css        # Design tokens + typography
-│   │   └── main.jsx
-│   └── package.json         # Vite + React (port 5173)
-├── database/                # SQLite database (auto-created)
-├── docs/                    # Viva documentation & technical guide
+│   │   ├── App.jsx            # Dynamic Multi-Tab POS Kiosk UI
+│   │   ├── App.css            # Component-level styling
+│   │   └── index.css          # Medical Dark-Theme Design Tokens
+│   ├── index.html
+│   ├── vite.config.js
+│   └── package.json
 ├── .gitignore
-├── package.json             # Root workspace scripts
+├── LICENSE
+├── package.json
 └── README.md
 ```
 
 ---
 
-## 🚀 Quick Start
-
-### Prerequisites
-- **Node.js** 18+ and **npm** 9+
-- Git (for cloning)
-
-### Installation
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/<your-username>/hospital-pharmacy-pos.git
-cd hospital-pharmacy-pos
-
-# 2. Backend setup
-cd backend
-cp .env.example .env          # Configure your JWT_SECRET!
-npm install
-npm run seed                  # Initialize database with demo data
-npm start                     # Starts on http://localhost:5000
-
-# 3. Frontend setup (new terminal)
-cd ../frontend
-npm install
-npm run dev                   # Starts on http://localhost:5173
-```
-
-### Health Check
-- **Backend**: `GET http://localhost:5000/api/health` → `{ "status": "ok" }`
-- **Frontend**: Open `http://localhost:5173` in browser
-
----
-
-## 🔑 Demo Staff Accounts
-
-| Username | Password | Passkey | Role | Capabilities |
-|----------|----------|---------|------|--------------|
-| `admin` | `admin123` | `2306324052` | **Admin** | Full dashboard, alerts, stock adjustment, medicine catalog, user management, reports |
-| `cashier01` | `cashier123` | `1111` | **Cashier** | POS billing, live catalog, patient invoices, receipt printing |
-| `cashier02` | `cashier123` | `1111` | **Cashier** | Secondary shift counter dispensary |
-
-> **Quick Login**: 1-click demo buttons available on sign-in screen for rapid demonstration.
-
----
-
-## 🧪 Automated Test Suite (100% Passing)
-
-```bash
-cd backend
-
-# Run all tests (118 tests)
-npm test
-
-# Individual test suites:
-node src/db/verify.js                    # Schema & seed validation (20 tests)
-node src/tests/test_auth.js              # Auth & RBAC (16 tests)
-node src/tests/test_dashboard.js         # KPIs & 4-tier alerts (15 tests)
-node src/tests/test_inventory.js         # Inventory & batches (14 tests)
-node src/tests/test_pos.js               # POS & stock deduction (15 tests)
-node src/tests/test_reports.js           # Analytics & procurement (17 tests)
-node src/tests/test_security.js          # Security audit (20 tests)
-node src/tests/test_e2e_workflow.js      # 18-step viva workflow (16 tests)
-```
-
-**Coverage**: 118 / 118 tests passing ✅
-
----
-
-## 🎓 College Viva & Demonstration
-
-Detailed step-by-step presentation scripts, viva questions, and technical architecture explanations:
-
-📄 **[Hospital Pharmacy POS System Documentation](docs/Hospital_Pharmacy_POS_System_Documentation.md)**
-
-Includes:
-- 18-step live demonstration workflow
-- Expected viva questions with model answers
-- Database schema walkthrough
-- Security architecture deep-dive
-- Performance considerations
-
----
-
-## 🔧 Configuration
-
-### Environment Variables (Backend)
-
-| Variable | Required | Description | Example |
-|----------|----------|-------------|---------|
-| `PORT` | No | Server port | `5000` |
-| `NODE_ENV` | No | Environment mode | `development` / `production` |
-| `JWT_SECRET` | **Yes** | JWT signing secret (64+ chars) | `crypto.randomBytes(64).toString('hex')` |
-| `DATABASE_PATH` | No | SQLite file path | `../database/pharmacy.db` |
-| `FRONTEND_URL` | No | CORS origin for production | `https://your-domain.com` |
-
-> **Generate JWT Secret**: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"`
-
----
-
-## 📦 Production Deployment
-
-### Backend
-```bash
-cd backend
-NODE_ENV=production JWT_SECRET=<strong-secret> npm start
-```
-- Use PM2 or systemd for process management
-- Configure reverse proxy (Nginx) with SSL
-- Set secure CORS origin in `FRONTEND_URL`
-
-### Frontend
-```bash
-cd frontend
-npm run build
-# Serve dist/ via Nginx, Vercel, Netlify, or any static host
-```
-
-### Database
-- SQLite file (`pharmacy.db`) persists in `database/`
-- For high availability, consider PostgreSQL migration (schema compatible)
-
----
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'feat: add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
-
-### Code Style
-- ESLint + Prettier configured
-- Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `refactor:`)
-- Write tests for new features
-
----
-
 ## 📄 License
 
-Distributed under the **MIT License**. See `LICENSE` for details.
-
----
-
-## 🙏 Acknowledgments
-
-- Built for **pharmacy education** and **healthcare technology** demonstrations
-- Inspired by real hospital pharmacy workflows
-- Designed with clinical safety as the highest priority
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
 <p align="center">
-  <strong>Made with ❤️ for Healthcare Technology Education</strong><br>
-  <sub>Hospital Pharmacy POS • Clinical-Grade • Student-Friendly</sub>
+  Crafted with care for healthcare professionals and clinical software developers.
 </p>

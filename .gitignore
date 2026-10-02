@@ -25,6 +25,11 @@ database/*.db-journal
 database/*.db-shm
 database/*.db-wal
 
+# Generated Reports & Archives
+backend/archives/daily_sales/*.xlsx
+backend/archives/daily_sales/*.pdf
+backend/archives/daily_sales/*.csv
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
